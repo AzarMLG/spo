@@ -1,6 +1,9 @@
+import sys
+import os
 import psutil
 import cpuinfo
 import json
+from psutil._common import bytes2human
 
 
 def print_welcome():
@@ -40,8 +43,8 @@ def info_cpu():
     print("Ядер: ", psutil.cpu_count(logical=False))
 
     # print("Кэш L1: ", j["l1_data_cache_size"])
-    print("Кэш L2: ", float(j["l2_cache_size"])/1000, "KiB")
-    print("Кэш L3: ", float(j["l3_cache_size"])/1000, "KiB")
+    print("Кэш L2: ", bytes2human(j["l2_cache_size"]))
+    print("Кэш L3: ", bytes2human(j["l3_cache_size"]))
     print("Поддерживаемые инструкции: ", j["flags"])
 
 
@@ -50,7 +53,24 @@ def info_bios():
 
 
 def info_partitions():
-    pass
+    templ = "%-16s %10s %10s %10s %5s%% %9s  %s"
+    print(templ % ("Раздел", "Всего", "Исп", "Свободно", "Исп ", "ФС", "Путь"))
+    for part in psutil.disk_partitions():
+        if os.name == 'nt':
+            if 'cdrom' in part.opts or part.fstype == '':
+                # skip cd-rom drives with no disk in it; they may raise
+                # ENOENT, pop-up a Windows GUI error for a non-ready
+                # partition or just hang.
+                continue
+        usage = psutil.disk_usage(part.mountpoint)
+        print(templ % (
+            part.device,
+            bytes2human(usage.total),
+            bytes2human(usage.used),
+            bytes2human(usage.free),
+            int(usage.percent),
+            part.fstype,
+            part.mountpoint))
 
 
 def info_disks():
