@@ -1,9 +1,9 @@
-import datetime
 import json
 import os
 import socket
 import cpuinfo
 import psutil
+from datetime import datetime
 from psutil._common import bytes2human
 
 af_map = {
@@ -122,7 +122,7 @@ def info_ps():
 
 
 def info_uptime():
-    date = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%d.%m.%Y %H:%M:%S")
+    date = datetime.fromtimestamp(psutil.boot_time()).strftime("%d.%m.%Y %H:%M:%S")
     print("ПК был запущен:", date)
 
 
@@ -133,7 +133,7 @@ def info_who():
         print("%-12s %-10s %-10s %-14s %s" % (
             user.name,
             user.terminal or '-',
-            datetime.datetime.fromtimestamp(user.started).strftime("%Y-%m-%d %H:%M"),
+            datetime.fromtimestamp(user.started).strftime("%Y-%m-%d %H:%M"),
             "(%s)" % user.host if user.host else "",
             proc_name
         ))
