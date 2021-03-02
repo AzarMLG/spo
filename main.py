@@ -1,3 +1,8 @@
+import psutil
+import cpuinfo
+import json
+
+
 def print_welcome():
     print("""Курсовой проект по дисциплине \"Системное программное обеспечение\"
 Исполнитель студент группы АССЗ-21 Азаревич А.Я.
@@ -24,7 +29,20 @@ def print_menu():
 
 
 def info_cpu():
-    pass
+    print("Собираю информацию...")
+    j = json.loads(cpuinfo.get_cpu_info_json())
+    print(j["brand_raw"])
+    print("Производитель: ", j["vendor_id_raw"])
+    print("Архитектура: ", j["arch"])
+    print("Частота: ", j["hz_advertised_friendly"])
+    print("Нагрузка: ", psutil.cpu_percent(), "%")
+    print("Логические процессоры: ", psutil.cpu_count())
+    print("Ядер: ", psutil.cpu_count(logical=False))
+
+    # print("Кэш L1: ", j["l1_data_cache_size"])
+    print("Кэш L2: ", float(j["l2_cache_size"])/1000, "KiB")
+    print("Кэш L3: ", float(j["l3_cache_size"])/1000, "KiB")
+    print("Поддерживаемые инструкции: ", j["flags"])
 
 
 def info_bios():
