@@ -1,5 +1,5 @@
 from info_ import info_cpu, info_bios, info_partitions, info_disks, info_keyboard, info_motherboard, info_mouse, \
-    info_gpu, info_monitor, info_network, info_ps, info_uptime
+    info_gpu, info_monitor, info_network, info_ps, info_uptime, info_who
 from print_ import print_welcome, print_menu
 
 
@@ -31,6 +31,8 @@ def menu():
             info_ps()
         elif x == 13:
             info_uptime()
+        elif x == 14:
+            info_who()
         elif x == 0:
             break
         else:
