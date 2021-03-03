@@ -45,25 +45,24 @@ def info_cpu():
 
 # TODO:BIOS
 def info_bios():
-    bios = dict()
     if sys.platform == 'win32':
         print_unavailable('win')
     else:
         if os.getuid() != 0:
             print_unavailable('root')
         else:
-            bios['vendor'] = subprocess.check_output("dmidecode --string bios-vendor",
-                                                     universal_newlines=True,
-                                                     shell=True)
-            bios['release_date'] = subprocess.check_output("dmidecode --string bios-release-date",
-                                                           universal_newlines=True,
-                                                           shell=True)
-            bios['version'] = subprocess.check_output("dmidecode --string bios-version",
-                                                      universal_newlines=True,
-                                                      shell=True)
-            print(bios['vendor'],
-                  bios['release_date'],
-                  bios['version'])
+            bios = dict()
+            parameters = ["bios-vendor", "bios-release-date", "bios-version",
+                          "bios-revision", "baseboard-manufacturer", "baseboard-product-name"]
+            for parameter in parameters:
+                string = str("dmidecode -s " + parameter)
+                bios[parameter] = subprocess.check_output(string,
+                                                          universal_newlines=True,
+                                                          shell=True)
+
+            print("Производитель: ", bios['vendor'],
+                  "Версия: ", bios['version'],
+                  "Дата: ", bios['release_date'])
 
 
 def info_partitions():
