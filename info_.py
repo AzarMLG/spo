@@ -60,9 +60,9 @@ def info_bios():
                                                           universal_newlines=True,
                                                           shell=True)
 
-            print("Производитель: ", bios['vendor'],
-                  "Версия: ", bios['version'],
-                  "Дата: ", bios['release_date'])
+            print("Производитель: ", bios['bios-vendor'],
+                  "Версия: ", bios['bios-version'],
+                  "Дата: ", bios['bios-release_date'])
 
 
 def info_partitions():
