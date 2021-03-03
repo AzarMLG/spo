@@ -43,7 +43,6 @@ def info_cpu():
     print("Поддерживаемые инструкции: ", j["flags"])
 
 
-# TODO:BIOS
 def info_bios():
     if sys.platform == 'win32':
         print_unavailable('win')
