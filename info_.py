@@ -1,15 +1,17 @@
-import json
 import os
 import sys
-import socket
-import cpuinfo
-import psutil
 import time
+import json
+import socket
+import psutil
+import cpuinfo
 import subprocess
-from print_ import print_unavailable
+
 from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
+
+from print_ import print_unavailable
 
 af_map = {
     socket.AF_INET: 'IPv4',
