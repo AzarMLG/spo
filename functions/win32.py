@@ -7,17 +7,22 @@ def strip(string):
     return string
 
 
-def get_wmic(device, name):
-    command = "wmic " + device + " get " + name
+def get_wmic(device, par) -> str:
+    command = "wmic " + device + " get " + par
     stdout = str(subprocess.check_output(command, text=True))
     return strip(stdout)
 
 
-def win32_gpu(name):
+def win32_gpu(par) -> str:
     device = "path win32_VideoController"
-    return get_wmic(device, name)
+    return get_wmic(device, par)
 
 
-def win32_bios(name):
+def win32_bios(par) -> str:
     device = "BIOS"
-    return get_wmic(device, name)
+    return get_wmic(device, par)
+
+
+def win32_cpu(par) -> str:
+    device = "CPU"
+    return get_wmic(device, par)
