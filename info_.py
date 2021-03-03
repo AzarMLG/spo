@@ -11,6 +11,7 @@ from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
+from functions.win32 import win32_gpu
 from print_ import print_unavailable
 
 af_map = {
@@ -28,6 +29,7 @@ duplex_map = {
 def info_cpu():
     print("Собираю информацию...")
     # TODO: Use non retarded way of getting this
+    # Apparently this just stopped working
     j = json.loads(cpuinfo.get_cpu_info_json())
     print(j["brand_raw"])
     print("Производитель: ", j["vendor_id_raw"])
@@ -115,25 +117,17 @@ def info_mouse():
     print("HID-compliant mouse")
 
 
-def get_win32_gpu(name):
-    command = "wmic path win32_VideoController get " + name
-    result = str(subprocess.check_output(command, text=True))
-    result = result.split("\n", 1)[1]
-    result = result.replace("\n", "")
-    return result
-
-
 def info_gpu():
     if sys.platform == "win32":
-        resolution = (get_win32_gpu("CurrentHorizontalResolution") + "x" +
-                      get_win32_gpu("CurrentVerticalResolution")).replace(" ", "")
+        resolution = (win32_gpu("CurrentHorizontalResolution") + "x" +
+                      win32_gpu("CurrentVerticalResolution")).replace(" ", "")
 
-        print("Имя: ", get_win32_gpu("Name"),
-              "\nПамять: ", bytes2human(int(get_win32_gpu("AdapterRAM"))),
+        print("Имя: ", win32_gpu("Name"),
+              "\nПамять: ", bytes2human(int(win32_gpu("AdapterRAM"))),
               "\nТекущее разрешение: ", resolution,
-              "\nТекущаяя частота обновления: ", get_win32_gpu("CurrentRefreshRate"),
-              "\nВерсия драйвера: ", get_win32_gpu("DriverVersion"),
-              "\nУстановленные видеодрайверы: ", get_win32_gpu("InstalledDisplayDrivers")
+              "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"),
+              "\nВерсия драйвера: ", win32_gpu("DriverVersion"),
+              "\nУстановленные видеодрайверы: ", win32_gpu("InstalledDisplayDrivers")
               )
     else:
         # TODO: GPU info on Linux
