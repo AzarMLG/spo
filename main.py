@@ -8,7 +8,11 @@ from print_ import print_welcome, print_menu
 def menu():
     print_menu()
     while True:
-        x = int(input("Введите ваш выбор: "))
+        try:
+            x = int(input("Введите ваш выбор: "))
+        except ValueError:
+            print("Это не номер, попробуйте ещё раз...")
+            continue
         if x == 1:
             info_cpu()
         elif x == 2:

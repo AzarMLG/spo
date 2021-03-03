@@ -6,6 +6,7 @@ import cpuinfo
 import psutil
 import time
 import subprocess
+from print_ import print_unavailable
 from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
@@ -34,8 +35,11 @@ def info_cpu():
     print("Ядер: ", psutil.cpu_count(logical=False))
 
     # print("Кэш L1: ", j["l1_data_cache_size"])
-    print("Кэш L2: ", bytes2human(j["l2_cache_size"]))
-    print("Кэш L3: ", bytes2human(j["l3_cache_size"]))
+    try:
+        print("Кэш L2: ", bytes2human(j["l2_cache_size"]))
+        print("Кэш L3: ", bytes2human(j["l3_cache_size"]))
+    except TypeError:
+        pass
     print("Поддерживаемые инструкции: ", j["flags"])
 
 
@@ -43,27 +47,30 @@ def info_cpu():
 def info_bios():
     bios = dict()
     if sys.platform == 'win32':
-        print('TODO')
+        print_unavailable('win')
     else:
-        bios['vendor'] = subprocess.check_output("dmidecode --string bios-vendor",
-                                                 universal_newlines=True,
-                                                 shell=True)
-        bios['release_date'] = subprocess.check_output("dmidecode --string bios-release-date",
-                                                       universal_newlines=True,
-                                                       shell=True)
-        bios['version'] = subprocess.check_output("dmidecode --string bios-version",
-                                                  universal_newlines=True,
-                                                  shell=True)
-    print(bios['vendor'],
-          bios['release_date'],
-          bios['version'])
+        if os.getuid() != 0:
+            print_unavailable('root')
+        else:
+            bios['vendor'] = subprocess.check_output("dmidecode --string bios-vendor",
+                                                     universal_newlines=True,
+                                                     shell=True)
+            bios['release_date'] = subprocess.check_output("dmidecode --string bios-release-date",
+                                                           universal_newlines=True,
+                                                           shell=True)
+            bios['version'] = subprocess.check_output("dmidecode --string bios-version",
+                                                      universal_newlines=True,
+                                                      shell=True)
+            print(bios['vendor'],
+                  bios['release_date'],
+                  bios['version'])
 
 
 def info_partitions():
     temp_line = "%-16s %10s %10s %10s %5s%% %9s  %s"
     print(temp_line % ("Раздел", "Всего", "Исп", "Свободно", "Исп ", "ФС", "Путь"))
     for part in psutil.disk_partitions():
-        if os.name == 'nt':
+        if sys.platform == 'win32':
             if 'cdrom' in part.opts or part.fstype == '':
                 # skip cd-rom drives with no disk in it; they may raise
                 # ENOENT, pop-up a Windows GUI error for a non-ready
