@@ -41,8 +41,8 @@ def info_bios():
 
 
 def info_partitions():
-    templ = "%-16s %10s %10s %10s %5s%% %9s  %s"
-    print(templ % ("Раздел", "Всего", "Исп", "Свободно", "Исп ", "ФС", "Путь"))
+    temp_line = "%-16s %10s %10s %10s %5s%% %9s  %s"
+    print(temp_line % ("Раздел", "Всего", "Исп", "Свободно", "Исп ", "ФС", "Путь"))
     for part in psutil.disk_partitions():
         if os.name == 'nt':
             if 'cdrom' in part.opts or part.fstype == '':
@@ -51,7 +51,7 @@ def info_partitions():
                 # partition or just hang.
                 continue
         usage = psutil.disk_usage(part.mountpoint)
-        print(templ % (
+        print(temp_line % (
             part.device,
             bytes2human(usage.total),
             bytes2human(usage.used),
@@ -94,7 +94,7 @@ def info_monitor():
 def info_network():
     stats = psutil.net_if_stats()
     io_counters = psutil.net_io_counters(pernic=True)
-    for nic, addrs in psutil.net_if_addrs().items():
+    for nic, addresses in psutil.net_if_addrs().items():
         print("%s:" % nic)
         if nic in stats:
             st = stats[nic]
@@ -112,15 +112,15 @@ def info_network():
             print("байт=%s, пакет=%s, ошиб=%s, отброш=%s" % (
                 bytes2human(io.bytes_sent), io.packets_sent, io.errout,
                 io.dropout))
-        for addr in addrs:
-            print("    %-4s" % af_map.get(addr.family, addr.family), end="")
-            print(" Адрес     : %s" % addr.address)
-            if addr.broadcast:
-                print("         Трансляция: %s" % addr.broadcast)
-            if addr.netmask:
-                print("    Маска подсети  : %s" % addr.netmask)
-            if addr.ptp:
-                print("      p2p       : %s" % addr.ptp)
+        for address in addresses:
+            print("    %-4s" % af_map.get(address.family, address.family), end="")
+            print(" Адрес     : %s" % address.address)
+            if address.broadcast:
+                print("         Трансляция: %s" % address.broadcast)
+            if address.netmask:
+                print("    Маска подсети  : %s" % address.netmask)
+            if address.ptp:
+                print("      p2p       : %s" % address.ptp)
         print("")
 
 
@@ -130,8 +130,8 @@ def info_ps():
 
 
 def info_uptime():
-    date = datetime.fromtimestamp(psutil.boot_time()).strftime("%d.%m.%Y %H:%M:%S")
-    print("ПК был запущен:", date)
+    print("ПК был запущен:",
+          datetime.fromtimestamp(psutil.boot_time()).strftime("%d.%m.%Y %H:%M:%S"))
 
 
 def info_who():
