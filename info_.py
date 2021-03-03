@@ -52,17 +52,22 @@ def info_bios():
             print_unavailable('root')
         else:
             bios = dict()
-            parameters = ["bios-vendor", "bios-release-date", "bios-version",
-                          "bios-revision", "baseboard-manufacturer", "baseboard-product-name"]
-            for parameter in parameters:
-                string = str("dmidecode -s " + parameter)
-                bios[parameter] = subprocess.check_output(string,
-                                                          universal_newlines=True,
-                                                          shell=True)
-
-            print("Производитель: ", bios['bios-vendor'],
-                  "Версия: ", bios['bios-version'],
-                  "Дата: ", bios['bios-release-date'])
+            dmi_id = ["bios-vendor", "bios-release-date", "bios-version",
+                      "bios-revision", "baseboard-manufacturer", "baseboard-product-name",
+                      "baseboard-serial-number", "processor-manufacturer", "processor-version"]
+            for dmi in dmi_id:
+                string = str("dmidecode -s " + dmi)
+                bios[dmi] = subprocess.check_output(string,
+                                                    universal_newlines=True,
+                                                    shell=True)
+            print("Изготовитель: ", bios[dmi_id[4]],
+                  "Наименование продукта: ", bios[dmi_id[5]],
+                  "Поставщик BIOS: ", bios[dmi_id[0]],
+                  "Версия: ", bios[dmi_id[2]],
+                  "Дата: ", bios[dmi_id[1]],
+                  "Серийный номер: ", bios[dmi_id[6]],
+                  "Изготовитель процессора: ", bios[dmi_id[7]],
+                  "Версия процесссора: ", bios[dmi_id[8]])
 
 
 def info_partitions():
