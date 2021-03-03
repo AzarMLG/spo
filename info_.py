@@ -62,7 +62,7 @@ def info_bios():
 
             print("Производитель: ", bios['bios-vendor'],
                   "Версия: ", bios['bios-version'],
-                  "Дата: ", bios['bios-release_date'])
+                  "Дата: ", bios['bios-release-date'])
 
 
 def info_partitions():
