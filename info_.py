@@ -11,7 +11,7 @@ from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from functions.win32 import win32_gpu
+from functions.win32 import win32_gpu, win32_bios
 from print_ import print_unavailable
 
 af_map = {
@@ -50,9 +50,21 @@ def info_cpu():
 
 def info_bios():
     if sys.platform == 'win32':
-        # TODO: look up if this is possible on Windows
-        # Yes, just use "wmic BIOS get BIOSVersion"
-        print_unavailable('win')
+        # Use "wmic BIOS get BIOSVersion"
+        # BiosCharacteristics BIOSVersion BuildNumber Caption CodeSet CurrentLanguage Description
+        # EmbeddedControllerMajorVersion  EmbeddedControllerMinorVersion  IdentificationCode  InstallableLanguages
+        # InstallDate  LanguageEdition  ListOfLanguages  Manufacturer  Name OtherTargetOS  PrimaryBIOS  ReleaseDate
+        # SerialNumber  SMBIOSBIOSVersion  SMBIOSMajorVersion  SMBIOSMinorVersion  SMBIOSPresent  SoftwareElementID
+        # SoftwareElementState  Status  SystemBiosMajorVersion  SystemBiosMinorVersion  TargetOperatingSystem  Version
+        controller_version = (win32_bios("EmbeddedControllerMajorVersion") + "." +
+                              win32_bios("EmbeddedControllerMinorVersion")).replace(" ", "")
+        print("Имя: ", win32_bios("Name"),
+              "\nИзготовитель: ",       win32_bios("Manufacturer"),
+              "\nВерсия BIOS: ",        win32_bios("BIOSVersion"),
+              "\nВерсия интегрированного контроллера: ", controller_version,
+              "\nСерийный номер: ",     win32_bios("SerialNumber"),
+              "\nВерсия SMBIOSBIOS: ",  win32_bios("SMBIOSBIOSVersion"),
+              )
     else:
         if os.getuid() != 0:
             print_unavailable('root')
@@ -66,14 +78,14 @@ def info_bios():
                 bios[dmi] = subprocess.check_output(string,
                                                     universal_newlines=True,
                                                     shell=True)
-            print("Изготовитель: ", bios[dmi_id[4]],
-                  "Наименование продукта: ", bios[dmi_id[5]],
-                  "Поставщик BIOS: ", bios[dmi_id[0]],
-                  "Версия: ", bios[dmi_id[2]],
-                  "Дата: ", bios[dmi_id[1]],
-                  "Серийный номер: ", bios[dmi_id[6]],
-                  "Изготовитель процессора: ", bios[dmi_id[7]],
-                  "Версия процесссора: ", bios[dmi_id[8]])
+            print("Изготовитель: ",             bios[dmi_id[4]],
+                  "Наименование продукта: ",    bios[dmi_id[5]],
+                  "Поставщик BIOS: ",           bios[dmi_id[0]],
+                  "Версия: ",                   bios[dmi_id[2]],
+                  "Дата: ",                     bios[dmi_id[1]],
+                  "Серийный номер: ",           bios[dmi_id[6]],
+                  "Изготовитель процессора: ",  bios[dmi_id[7]],
+                  "Версия процесссора: ",       bios[dmi_id[8]])
 
 
 def info_partitions():
@@ -126,7 +138,7 @@ def info_gpu():
               "\nПамять: ", bytes2human(int(win32_gpu("AdapterRAM"))),
               "\nТекущее разрешение: ", resolution,
               "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"),
-              "\nВерсия драйвера: ", win32_gpu("DriverVersion"),
+              "\nВерсия драйвера: ",             win32_gpu("DriverVersion"),
               "\nУстановленные видеодрайверы: ", win32_gpu("InstalledDisplayDrivers")
               )
     else:
