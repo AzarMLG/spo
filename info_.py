@@ -1,9 +1,11 @@
 import json
 import os
+import sys
 import socket
 import cpuinfo
 import psutil
 import time
+import subprocess
 from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
@@ -39,7 +41,22 @@ def info_cpu():
 
 # TODO:BIOS
 def info_bios():
-    pass
+    bios = dict()
+    if sys.platform == 'win32':
+        print('TODO')
+    else:
+        bios['vendor'] = subprocess.check_output("dmidecode --string bios-vendor",
+                                                 universal_newlines=True,
+                                                 shell=True)
+        bios['release_date'] = subprocess.check_output("dmidecode --string bios-release-date",
+                                                       universal_newlines=True,
+                                                       shell=True)
+        bios['version'] = subprocess.check_output("dmidecode --string bios-version",
+                                                  universal_newlines=True,
+                                                  shell=True)
+    print(bios['vendor'],
+          bios['release_date'],
+          bios['version'])
 
 
 def info_partitions():
