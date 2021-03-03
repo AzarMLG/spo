@@ -27,6 +27,7 @@ duplex_map = {
 
 def info_cpu():
     print("Собираю информацию...")
+    # TODO: Use non retarded way of getting this
     j = json.loads(cpuinfo.get_cpu_info_json())
     print(j["brand_raw"])
     print("Производитель: ", j["vendor_id_raw"])
@@ -47,6 +48,8 @@ def info_cpu():
 
 def info_bios():
     if sys.platform == 'win32':
+        # TODO: look up if this is possible on Windows
+        # Yes, just use "wmic BIOS get BIOSVersion"
         print_unavailable('win')
     else:
         if os.getuid() != 0:
@@ -99,7 +102,7 @@ def info_disks():
 
 # TODO: Keyboard(WTF is even supposed to be here?)
 def info_keyboard():
-    pass
+    print("Standard PS/2 Keyboard")
 
 
 # TODO: Motherboard
@@ -109,7 +112,8 @@ def info_motherboard():
 
 # TODO Mouse
 def info_mouse():
-    pass
+    print("HID-compliant mouse")
+
 
 
 # TODO GPU
