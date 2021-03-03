@@ -35,6 +35,7 @@ def info_cpu():
     print("Поддерживаемые инструкции: ", j["flags"])
 
 
+# TODO:BIOS
 def info_bios():
     pass
 
@@ -60,26 +61,32 @@ def info_partitions():
             part.mountpoint))
 
 
+# TODO: Disks
 def info_disks():
     pass
 
 
+# TODO: Keyboard(WTF is even supposed to be here?)
 def info_keyboard():
     pass
 
 
+# TODO: Motherboard
 def info_motherboard():
     pass
 
 
+# TODO Mouse
 def info_mouse():
     pass
 
 
+# TODO GPU
 def info_gpu():
     pass
 
 
+# TODO monitor(probably resolution, input type, etc)
 def info_monitor():
     pass
 
@@ -117,6 +124,7 @@ def info_network():
         print("")
 
 
+# TODO something like top
 def info_ps():
     pass
 
