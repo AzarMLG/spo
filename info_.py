@@ -43,27 +43,30 @@ def info_cpu():
     print("Поддерживаемые инструкции: ", j["flags"])
 
 
-# TODO:BIOS
 def info_bios():
-    bios = dict()
     if sys.platform == 'win32':
         print_unavailable('win')
     else:
         if os.getuid() != 0:
             print_unavailable('root')
         else:
-            bios['vendor'] = subprocess.check_output("dmidecode --string bios-vendor",
-                                                     universal_newlines=True,
-                                                     shell=True)
-            bios['release_date'] = subprocess.check_output("dmidecode --string bios-release-date",
-                                                           universal_newlines=True,
-                                                           shell=True)
-            bios['version'] = subprocess.check_output("dmidecode --string bios-version",
-                                                      universal_newlines=True,
-                                                      shell=True)
-            print(bios['vendor'],
-                  bios['release_date'],
-                  bios['version'])
+            bios = dict()
+            dmi_id = ["bios-vendor", "bios-release-date", "bios-version",
+                      "bios-revision", "baseboard-manufacturer", "baseboard-product-name",
+                      "baseboard-serial-number", "processor-manufacturer", "processor-version"]
+            for dmi in dmi_id:
+                string = str("dmidecode -s " + dmi)
+                bios[dmi] = subprocess.check_output(string,
+                                                    universal_newlines=True,
+                                                    shell=True)
+            print("Изготовитель: ", bios[dmi_id[4]],
+                  "Наименование продукта: ", bios[dmi_id[5]],
+                  "Поставщик BIOS: ", bios[dmi_id[0]],
+                  "Версия: ", bios[dmi_id[2]],
+                  "Дата: ", bios[dmi_id[1]],
+                  "Серийный номер: ", bios[dmi_id[6]],
+                  "Изготовитель процессора: ", bios[dmi_id[7]],
+                  "Версия процесссора: ", bios[dmi_id[8]])
 
 
 def info_partitions():
