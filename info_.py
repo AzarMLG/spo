@@ -115,10 +115,29 @@ def info_mouse():
     print("HID-compliant mouse")
 
 
+def get_win32_gpu(name):
+    command = "wmic path win32_VideoController get " + name
+    result = str(subprocess.check_output(command, text=True))
+    result = result.split("\n", 1)[1]
+    result = result.replace("\n", "")
+    return result
 
-# TODO GPU
+
 def info_gpu():
-    pass
+    if sys.platform == "win32":
+        resolution = (get_win32_gpu("CurrentHorizontalResolution") + "x" +
+                      get_win32_gpu("CurrentVerticalResolution")).replace(" ", "")
+
+        print("Имя: ", get_win32_gpu("Name"),
+              "\nПамять: ", bytes2human(int(get_win32_gpu("AdapterRAM"))),
+              "\nТекущее разрешение: ", resolution,
+              "\nТекущаяя частота обновления: ", get_win32_gpu("CurrentRefreshRate"),
+              "\nВерсия драйвера: ", get_win32_gpu("DriverVersion"),
+              "\nУстановленные видеодрайверы: ", get_win32_gpu("InstalledDisplayDrivers")
+              )
+    else:
+        # TODO: GPU info on Linux
+        print_unavailable("linux")
 
 
 # TODO monitor(probably resolution, input type, etc)
