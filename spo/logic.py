@@ -8,6 +8,7 @@ from spo.win32.getinfo import win32_print_cpu, win32_print_bios, win32_print_dis
 
 
 def info_cpu():
+    print("Информация о центральном процессоре: \n")
     if sys.platform == 'win32':
         win32_print_cpu()
     else:
@@ -15,6 +16,7 @@ def info_cpu():
 
 
 def info_bios():
+    print("Информация о BIOS:\n")
     if sys.platform == 'win32':
         win32_print_bios()
     else:
@@ -22,10 +24,12 @@ def info_bios():
 
 
 def info_partitions():
+    print("Информация о разделах на дисковых накопителях: \n")
     print_partitions()
 
 
 def info_disks():
+    print("Информация о дисковых устройсвах: \n")
     if sys.platform == 'win32':
         win32_print_disks()
     else:
@@ -34,10 +38,12 @@ def info_disks():
 
 # TODO: Keyboard(WTF is even supposed to be here?)
 def info_keyboard():
-    print("Standard PS/2 Keyboard")
+    print("Информация о клавиатуре: \n")
+    print("Имя: ", "Standard PS/2 Keyboard")
 
 
 def info_motherboard():
+    print("Информация о системной плате: \n")
     if sys.platform == 'win32':
         win32_print_mb()
     else:
@@ -46,10 +52,12 @@ def info_motherboard():
 
 # TODO Mouse
 def info_mouse():
+    print("Информация о mouse: \n")
     print("HID-compliant mouse")
 
 
 def info_gpu():
+    print("Информация о графическом процессоре: \n")
     if sys.platform == "win32":
         win32_print_gpu()
     else:
@@ -57,6 +65,7 @@ def info_gpu():
 
 
 def info_monitor():
+    print("Информация о мониторе: \n")
     if sys.platform == 'win32':
         win32_print_monitor()
     else:
@@ -64,16 +73,20 @@ def info_monitor():
 
 
 def info_network():
+    print("Информация о сетевых адаптерах: \n")
     print_network()
 
 
 def info_ps():
+    print("Информация о запущенных процессах: \n")
     print_ps()
 
 
 def info_uptime():
+    print("Информация о дате и времени запуска операционной системы: \n")
     print_uptime()
 
 
 def info_who():
+    print("Информация о дате и времени входа в систему пользователей: \n")
     print_who()
