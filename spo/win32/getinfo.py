@@ -1,4 +1,4 @@
-from spo.win32.wmic import win32_cpu
+from spo.win32.wmic import win32_cpu, win32_bios
 
 
 def win32_print_cpu():
@@ -26,4 +26,22 @@ def win32_print_cpu():
           "\nКол-во потоков: ", win32_cpu("NumberOfLogicalProcessors"),
           "\nИдентификатор процессора: ", win32_cpu("ProcessorId"),
           "\nРевизия процессора: ", win32_cpu("Revision")
+          )
+
+
+def win32_print_bios():
+    # Use "wmic BIOS get BIOSVersion"
+    # BiosCharacteristics BIOSVersion BuildNumber Caption CodeSet CurrentLanguage Description
+    # EmbeddedControllerMajorVersion  EmbeddedControllerMinorVersion  IdentificationCode  InstallableLanguages
+    # InstallDate  LanguageEdition  ListOfLanguages  Manufacturer  Name OtherTargetOS  PrimaryBIOS  ReleaseDate
+    # SerialNumber  SMBIOSBIOSVersion  SMBIOSMajorVersion  SMBIOSMinorVersion  SMBIOSPresent  SoftwareElementID
+    # SoftwareElementState  Status  SystemBiosMajorVersion  SystemBiosMinorVersion  TargetOperatingSystem  Version
+    controller_version = (win32_bios("EmbeddedControllerMajorVersion") + "." +
+                          win32_bios("EmbeddedControllerMinorVersion")).replace(" ", "")
+    print("Имя: ", win32_bios("Name"),
+          "\nИзготовитель: ", win32_bios("Manufacturer"),
+          "\nВерсия BIOS: ", win32_bios("BIOSVersion"),
+          "\nВерсия интегрированного контроллера: ", controller_version,
+          "\nСерийный номер: ", win32_bios("SerialNumber"),
+          "\nВерсия SMBIOSBIOS: ", win32_bios("SMBIOSBIOSVersion"),
           )
