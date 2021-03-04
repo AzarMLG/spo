@@ -1,4 +1,8 @@
-from spo.win32.wmic import win32_cpu, win32_bios
+from psutil._common import bytes2human
+from tabulate import tabulate
+
+from spo.logic import form_list, clear_list, insert_name
+from spo.win32.wmic import win32_cpu, win32_bios, win32_disk
 
 
 def win32_print_cpu():
@@ -45,3 +49,29 @@ def win32_print_bios():
           "\nСерийный номер: ", win32_bios("SerialNumber"),
           "\nВерсия SMBIOSBIOS: ", win32_bios("SMBIOSBIOSVersion"),
           )
+
+
+def win32_print_disks():
+    # Use "wmic DISKDRIVE get ***"
+    # Availability BytesPerSector Capabilities CapabilityDescriptions Caption
+    # CompressionMethod ConfigManagerErrorCode ConfigManagerUserConfig CreationClassName DefaultBlockSize
+    # Description DeviceID ErrorCleared ErrorDescription ErrorMethodology FirmwareRevision Index InstallDate
+    # InterfaceType LastErrorCode Manufacturer MaxBlockSize MaxMediaSize MediaLoaded MediaType MinBlockSize Model
+    # Name NeedsCleaning NumberOfMediaSupported Partitions PNPDeviceID PowerManagementCapabilities
+    # PowerManagementSupported SCSIBus SCSILogicalUnit SCSIPort SCSITargetId SectorsPerTrack SerialNumber
+    # Signature Size Status StatusInfo SystemCreationClassName SystemName TotalCylinders TotalHeads TotalSectors
+    # TotalTracks TracksPerCylinder
+    caption = form_list(win32_disk("Caption"), "Имя: ")
+    device_id = form_list(win32_disk("DeviceID"), "ID Устройства: ")
+    bytes_ps = form_list(win32_disk("BytesPerSector"), "Байт в секторе: ")
+    firmware = form_list(win32_disk("FirmwareRevision"), "Ревизия прошивки: ")
+    index = form_list(win32_disk("Index"), "Индекс: ")
+    partitions = form_list(win32_disk("Partitions"), "Разделы: ")
+    serial = form_list(win32_disk("SerialNumber"), "Серийный номер: ")
+    total_sectors = form_list(win32_disk("TotalSectors"), "Всего секторов: ")
+    size = clear_list(win32_disk("Size"))
+    for each in range(len(size)):
+        size[each] = bytes2human(int(size[each]))
+    insert_name(size, "Размер: ")
+    print(tabulate([index, size, device_id, partitions, firmware, serial, bytes_ps, total_sectors],
+                   headers=caption))

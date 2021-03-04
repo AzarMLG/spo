@@ -50,3 +50,7 @@ def linux_print_bios():
               "Серийный номер: ", bios[dmi_id[6]],
               "Изготовитель процессора: ", bios[dmi_id[7]],
               "Версия процесссора: ", bios[dmi_id[8]])
+
+
+def linux_print_disks():
+    pass

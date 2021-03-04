@@ -3,15 +3,14 @@ import time
 import socket
 import psutil
 
-from tabulate import tabulate
 from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from spo.linux.getinfo import linux_print_cpu, linux_print_bios
+from spo.linux.getinfo import linux_print_cpu, linux_print_bios, linux_print_disks
 from spo.multiplatform.getinfo import print_partitions
-from spo.win32.getinfo import win32_print_cpu, win32_print_bios
-from spo.win32.wmic import win32_gpu, win32_disk, win32_mb, win32_mon
+from spo.win32.getinfo import win32_print_cpu, win32_print_bios, win32_print_disks
+from spo.win32.wmic import win32_gpu, win32_mb, win32_mon
 from print_ import print_unavailable
 
 
@@ -36,32 +35,9 @@ def info_partitions():
 # TODO: Disks
 def info_disks():
     if sys.platform == 'win32':
-        # Use "wmic DISKDRIVE get ***"
-        # Availability BytesPerSector Capabilities CapabilityDescriptions Caption
-        # CompressionMethod ConfigManagerErrorCode ConfigManagerUserConfig CreationClassName DefaultBlockSize
-        # Description DeviceID ErrorCleared ErrorDescription ErrorMethodology FirmwareRevision Index InstallDate
-        # InterfaceType LastErrorCode Manufacturer MaxBlockSize MaxMediaSize MediaLoaded MediaType MinBlockSize Model
-        # Name NeedsCleaning NumberOfMediaSupported Partitions PNPDeviceID PowerManagementCapabilities
-        # PowerManagementSupported SCSIBus SCSILogicalUnit SCSIPort SCSITargetId SectorsPerTrack SerialNumber
-        # Signature Size Status StatusInfo SystemCreationClassName SystemName TotalCylinders TotalHeads TotalSectors
-        # TotalTracks TracksPerCylinder
-
-        caption = form_list(win32_disk("Caption"),            "Имя: ")
-        device_id = form_list(win32_disk("DeviceID"),         "ID Устройства: ")
-        bytes_ps = form_list(win32_disk("BytesPerSector"),    "Байт в секторе: ")
-        firmware = form_list(win32_disk("FirmwareRevision"),  "Ревизия прошивки: ")
-        index = form_list(win32_disk("Index"),                "Индекс: ")
-        partitions = form_list(win32_disk("Partitions"),      "Разделы: ")
-        serial = form_list(win32_disk("SerialNumber"),        "Серийный номер: ")
-        total_sectors = form_list(win32_disk("TotalSectors"), "Всего секторов: ")
-
-        size = clear_list(win32_disk("Size"))
-        for each in range(len(size)):
-            size[each] = bytes2human(int(size[each]))
-        insert_name(size, "Размер: ")
-
-        print(tabulate([index, size, device_id, partitions, firmware, serial, bytes_ps, total_sectors],
-                       headers=caption))
+        win32_print_disks()
+    else:
+        linux_print_disks()
 
 
 def form_list(var, name):
