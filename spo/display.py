@@ -1,3 +1,6 @@
+import os
+import sys
+
 fio = "Азаревич А.Я."
 
 
@@ -35,3 +38,13 @@ def print_unavailable(why):
         print("Данная функция недоступна на ОС Linux")
     else:
         print("Что то пошло не так")
+
+
+def pause():
+    if sys.platform == 'win32':
+        os.system('pause')
+
+
+def clear():
+    if sys.platform == 'win32':
+        os.system('cls')
