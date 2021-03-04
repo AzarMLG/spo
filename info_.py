@@ -7,12 +7,13 @@ import psutil
 import cpuinfo
 import subprocess
 
+from tabulate import tabulate
 from datetime import datetime, date
 from tabulate import tabulate
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from functions.win32 import win32_gpu, win32_bios, win32_cpu, win32_disk, win32_mb
+from functions.win32 import win32_gpu, win32_bios, win32_cpu, win32_disk, win32_mb, win32_mon
 from print_ import print_unavailable
 
 af_map = {
@@ -188,7 +189,6 @@ def info_keyboard():
     print("Standard PS/2 Keyboard")
 
 
-# TODO: Motherboard
 def info_motherboard():
     if sys.platform == 'win32':
         # Use "wmic BASEBOARD get ***"
@@ -213,13 +213,10 @@ def info_mouse():
 
 def info_gpu():
     if sys.platform == "win32":
-        resolution = (win32_gpu("CurrentHorizontalResolution") + "x" +
-                      win32_gpu("CurrentVerticalResolution")).replace(" ", "")
-
-        print("Имя: ", win32_gpu("Name"),
-              "\nПамять: ", bytes2human(int(win32_gpu("AdapterRAM"))),
-              "\nТекущее разрешение: ", resolution,
-              "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"),
+        print("Имя: ",                           win32_gpu("Name"),
+              "\nПамять: ",      bytes2human(int(win32_gpu("AdapterRAM"))),
+              "\nТекущее разрешение: ",          win32_resolution(),
+              "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
               "\nВерсия драйвера: ",             win32_gpu("DriverVersion"),
               "\nУстановленные видеодрайверы: ", win32_gpu("InstalledDisplayDrivers")
               )
@@ -228,12 +225,34 @@ def info_gpu():
         print_unavailable("linux")
 
 
-# TODO monitor(probably resolution, input type, etc)
+def win32_resolution() -> str:
+    return (win32_gpu("CurrentHorizontalResolution") + "x" +
+            win32_gpu("CurrentVerticalResolution")).replace(" ", "")
+
+
 def info_monitor():
-    pass
+    if sys.platform == 'win32':
+        print("Имя: ",                          win32_mon("Caption"),
+              "\nID Устройства: ",              win32_mon("DeviceID"),
+              "\nТекущее разрешение: ",         win32_resolution(),
+              "\nТекущая частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
+              )
+    else:
+        pass
 
 
 def info_network():
+    af_map = {
+        socket.AF_INET: 'IPv4',
+        socket.AF_INET6: 'IPv6',
+        psutil.AF_LINK: 'MAC',
+    }
+    duplex_map = {
+        psutil.NIC_DUPLEX_FULL: "full",
+        psutil.NIC_DUPLEX_HALF: "half",
+        psutil.NIC_DUPLEX_UNKNOWN: "?",
+    }
+
     stats = psutil.net_if_stats()
     io_counters = psutil.net_io_counters(pernic=True)
     for nic, addresses in psutil.net_if_addrs().items():
