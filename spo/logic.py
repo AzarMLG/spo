@@ -7,11 +7,11 @@ from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from spo.linux.getinfo import linux_print_cpu, linux_print_bios, linux_print_disks, linux_print_mb
+from spo.linux.getinfo import linux_print_cpu, linux_print_bios, linux_print_disks, linux_print_mb, linux_print_gpu, \
+    linux_print_monitor
 from spo.multiplatform.getinfo import print_partitions
-from spo.win32.getinfo import win32_print_cpu, win32_print_bios, win32_print_disks, win32_print_mb
-from spo.win32.wmic import win32_gpu, win32_mon
-from print_ import print_unavailable
+from spo.win32.getinfo import win32_print_cpu, win32_print_bios, win32_print_disks, win32_print_mb, win32_print_gpu, \
+    win32_print_monitor
 
 
 def info_cpu():
@@ -58,32 +58,16 @@ def info_mouse():
 
 def info_gpu():
     if sys.platform == "win32":
-        print("Имя: ",                           win32_gpu("Name"),
-              "\nПамять: ",      bytes2human(int(win32_gpu("AdapterRAM"))),
-              "\nТекущее разрешение: ",          win32_resolution(),
-              "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
-              "\nВерсия драйвера: ",             win32_gpu("DriverVersion"),
-              "\nУстановленные видеодрайверы: ", win32_gpu("InstalledDisplayDrivers")
-              )
+        win32_print_gpu()
     else:
-        # TODO: GPU info on Linux
-        print_unavailable("linux")
-
-
-def win32_resolution() -> str:
-    return (win32_gpu("CurrentHorizontalResolution") + "x" +
-            win32_gpu("CurrentVerticalResolution")).replace(" ", "")
+        linux_print_gpu()
 
 
 def info_monitor():
     if sys.platform == 'win32':
-        print("Имя: ",                          win32_mon("Caption"),
-              "\nID Устройства: ",              win32_mon("DeviceID"),
-              "\nТекущее разрешение: ",         win32_resolution(),
-              "\nТекущая частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
-              )
+        win32_print_monitor()
     else:
-        pass
+        linux_print_monitor()
 
 
 def info_network():

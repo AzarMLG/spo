@@ -58,3 +58,12 @@ def linux_print_disks():
 
 def linux_print_mb():
     pass
+
+
+def linux_print_gpu():
+    # TODO: GPU info on Linux
+    print_unavailable("linux")
+
+
+def linux_print_monitor():
+    pass

@@ -2,7 +2,7 @@ from psutil._common import bytes2human
 from tabulate import tabulate
 
 from spo.lists import form_list, insert_name, clear_list
-from spo.win32.wmic import win32_cpu, win32_bios, win32_disk, win32_mb
+from spo.win32.wmic import win32_cpu, win32_bios, win32_disk, win32_mb, win32_gpu, win32_mon
 
 
 def win32_print_cpu():
@@ -89,3 +89,26 @@ def win32_print_mb():
     print("Имя: ", product,
           "\nИзготовитель: ", manufacturer,
           "\nСерийный номер: ", sn)
+
+
+def win32_print_gpu():
+    print("Имя: ", win32_gpu("Name"),
+          "\nПамять: ", bytes2human(int(win32_gpu("AdapterRAM"))),
+          "\nТекущее разрешение: ", win32_get_resolution(),
+          "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
+          "\nВерсия драйвера: ", win32_gpu("DriverVersion"),
+          "\nУстановленные видеодрайверы: ", win32_gpu("InstalledDisplayDrivers")
+          )
+
+
+def win32_get_resolution() -> str:
+    return (win32_gpu("CurrentHorizontalResolution") + "x" +
+            win32_gpu("CurrentVerticalResolution")).replace(" ", "")
+
+
+def win32_print_monitor():
+    print("Имя: ", win32_mon("Caption"),
+          "\nID Устройства: ", win32_mon("DeviceID"),
+          "\nТекущее разрешение: ", win32_get_resolution(),
+          "\nТекущая частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
+          )
