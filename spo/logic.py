@@ -1,79 +1,26 @@
 import os
 import sys
 import time
-import json
 import socket
 import psutil
-import cpuinfo
 import subprocess
 
 from tabulate import tabulate
 from datetime import datetime, date
-from tabulate import tabulate
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from functions.win32 import win32_gpu, win32_bios, win32_cpu, win32_disk, win32_mb, win32_mon
+from spo.linux.getinfo import linux_print_cpu
+from spo.win32.getinfo import win32_print_cpu
+from spo.win32.wmic import win32_gpu, win32_bios, win32_disk, win32_mb, win32_mon
 from print_ import print_unavailable
-
-af_map = {
-    socket.AF_INET: 'IPv4',
-    socket.AF_INET6: 'IPv6',
-    psutil.AF_LINK: 'MAC',
-}
-duplex_map = {
-    psutil.NIC_DUPLEX_FULL: "full",
-    psutil.NIC_DUPLEX_HALF: "half",
-    psutil.NIC_DUPLEX_UNKNOWN: "?",
-}
 
 
 def info_cpu():
     if sys.platform == 'win32':
-        # Use "wmic CPU get ***"
-        # AddressWidth Architecture AssetTag Availability Caption Characteristics ConfigManagerErrorCode
-        # ConfigManagerUserConfig CpuStatus CreationClassName CurrentClockSpeed CurrentVoltage DataWidth Description
-        # DeviceID ErrorCleared ErrorDescription ExtClock Family InstallDate L2CacheSize L2CacheSpeed L3CacheSize
-        # L3CacheSpeed LastErrorCode Level LoadPercentage Manufacturer MaxClockSpeed Name NumberOfCores
-        # NumberOfEnabledCore NumberOfLogicalProcessors OtherFamilyDescription PartNumber PNPDeviceID
-        # PowerManagementCapabilities PowerManagementSupported ProcessorId ProcessorType Revision Role
-        # SecondLevelAddressTranslationExtensions SerialNumber SocketDesignation Status StatusInfo Stepping
-        # SystemCreationClassName SystemName ThreadCount UniqueId UpgradeMethod Version VirtualizationFirmwareEnabled
-        # VMMonitorModeExtensions  VoltageCaps
-        print("Имя: ",                          win32_cpu("Name"),
-              "\nОписание: ",                   win32_cpu("Caption"),
-              "\nТекущая тактовая частота: ",   win32_cpu("CurrentClockSpeed"),
-              "\nНапряжение: ",                 win32_cpu("CurrentVoltage"),
-              "\nID Устройства: ",              win32_cpu("DeviceID"),
-              "\nРазмер кэша L2: ",             win32_cpu("L2CacheSize")   .replace(' ', ''), "KB",
-              "\nРазмер кэша L3: ",             win32_cpu("L3CacheSize")   .replace(' ', ''), "KB",
-              "\nТекущая загрузка: ",           win32_cpu("LoadPercentage").replace(' ', ''), "%",
-              "\nИзготовитель: ",               win32_cpu("Manufacturer"),
-              "\nКол-во ядер: ",                win32_cpu("NumberOfCores"),
-              "\nКол-во активированных ядер: ", win32_cpu("NumberOfEnabledCore"),
-              "\nКол-во потоков: ",             win32_cpu("NumberOfLogicalProcessors"),
-              "\nИдентификатор процессора: ",   win32_cpu("ProcessorId"),
-              "\nРевизия процессора: ",         win32_cpu("Revision")
-              )
+        win32_print_cpu()
     else:
-        # TODO: Use non retarded way of getting this
-        # Apparently this just stopped working
-        j = json.loads(cpuinfo.get_cpu_info_json())
-        print(j["brand_raw"])
-        print("Производитель: ", j["vendor_id_raw"])
-        print("Архитектура: ", j["arch"])
-        print("Частота: ", j["hz_advertised_friendly"])
-        print("Нагрузка: ", psutil.cpu_percent(), "%")
-        print("Логические процессоры: ", psutil.cpu_count())
-        print("Ядер: ", psutil.cpu_count(logical=False))
-
-        # print("Кэш L1: ", j["l1_data_cache_size"])
-        try:
-            print("Кэш L2: ", bytes2human(j["l2_cache_size"]))
-            print("Кэш L3: ", bytes2human(j["l3_cache_size"]))
-        except TypeError:
-            pass
-        print("Поддерживаемые инструкции: ", j["flags"])
+        linux_print_cpu()
 
 
 def info_bios():
