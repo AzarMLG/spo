@@ -1,11 +1,12 @@
-import socket
 import sys
 import time
-from datetime import date, datetime
-from shutil import get_terminal_size
+import socket
 
 import psutil
 from psutil._common import bytes2human
+
+from datetime import date, datetime
+from shutil import get_terminal_size
 
 
 def print_partitions():
