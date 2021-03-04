@@ -6,7 +6,7 @@ import subprocess
 import psutil
 from psutil._common import bytes2human
 
-from print_ import print_unavailable
+from spo.print_ import print_unavailable
 
 
 def linux_print_cpu():
