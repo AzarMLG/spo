@@ -1,8 +1,8 @@
-import json
 import os
+import json
+import cpuinfo
 import subprocess
 
-import cpuinfo
 import psutil
 from psutil._common import bytes2human
 
@@ -15,8 +15,8 @@ def linux_print_cpu():
     j = json.loads(cpuinfo.get_cpu_info_json())
     print(j["brand_raw"])
     print("Производитель: ", j["vendor_id_raw"])
-    print("Архитектура: ", j["arch"])
-    print("Частота: ", j["hz_advertised_friendly"])
+    print("Архитектура: ",   j["arch"])
+    print("Частота: ",       j["hz_advertised_friendly"])
     print("Нагрузка: ", psutil.cpu_percent(), "%")
     print("Логические процессоры: ", psutil.cpu_count())
     print("Ядер: ", psutil.cpu_count(logical=False))
@@ -42,14 +42,14 @@ def linux_print_bios():
             bios[dmi] = subprocess.check_output(string,
                                                 universal_newlines=True,
                                                 shell=True)
-        print("Изготовитель: ", bios[dmi_id[4]],
-              "Наименование продукта: ", bios[dmi_id[5]],
-              "Поставщик BIOS: ", bios[dmi_id[0]],
-              "Версия: ", bios[dmi_id[2]],
-              "Дата: ", bios[dmi_id[1]],
-              "Серийный номер: ", bios[dmi_id[6]],
+        print("Изготовитель: ",            bios[dmi_id[4]],
+              "Наименование продукта: ",   bios[dmi_id[5]],
+              "Поставщик BIOS: ",          bios[dmi_id[0]],
+              "Версия: ",                  bios[dmi_id[2]],
+              "Дата: ",                    bios[dmi_id[1]],
+              "Серийный номер: ",          bios[dmi_id[6]],
               "Изготовитель процессора: ", bios[dmi_id[7]],
-              "Версия процесссора: ", bios[dmi_id[8]])
+              "Версия процесссора: ",      bios[dmi_id[8]])
 
 
 def linux_print_disks():
