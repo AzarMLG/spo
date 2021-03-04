@@ -12,7 +12,7 @@ from tabulate import tabulate
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from functions.win32 import win32_gpu, win32_bios, win32_cpu, win32_disk
+from functions.win32 import win32_gpu, win32_bios, win32_cpu, win32_disk, win32_mb
 from print_ import print_unavailable
 
 af_map = {
@@ -190,7 +190,20 @@ def info_keyboard():
 
 # TODO: Motherboard
 def info_motherboard():
-    pass
+    if sys.platform == 'win32':
+        # Use "wmic BASEBOARD get ***"
+        # Caption ConfigOptions CreationClassName Depth Description Height HostingBoard HotSwappable InstallDate
+        # Manufacturer Model Name OtherIdentifyingInfo PartNumber PoweredOn  Product Removable  Replaceable
+        # Requirements Description RequiresDaughterBoard SerialNumber SKU SlotLayout SpecialRequirements Status Tag
+        # Version Weight  Width
+        manufacturer = win32_mb("Manufacturer")
+        product = win32_mb("Product")
+        sn = win32_mb("SerialNumber")
+        print("Имя: ",              product,
+              "\nИзготовитель: ",   manufacturer,
+              "\nСерийный номер: ", sn)
+    else:
+        pass
 
 
 # TODO Mouse

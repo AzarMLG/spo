@@ -31,3 +31,8 @@ def win32_cpu(par) -> str:
 def win32_disk(par) -> str:
     device = "DISKDRIVE"
     return get_wmic(device, par)
+
+
+def win32_mb(par) -> str:
+    device = "BASEBOARD"
+    return get_wmic(device, par)
