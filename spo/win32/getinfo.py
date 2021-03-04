@@ -1,7 +1,7 @@
 from psutil._common import bytes2human
 from tabulate import tabulate
 
-from spo.logic import form_list, clear_list, insert_name
+from spo.lists import form_list, insert_name, clear_list
 from spo.win32.wmic import win32_cpu, win32_bios, win32_disk
 
 

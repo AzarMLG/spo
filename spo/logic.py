@@ -40,22 +40,6 @@ def info_disks():
         linux_print_disks()
 
 
-def form_list(var, name):
-    array = clear_list(var)
-    insert_name(array, name)
-    return array
-
-
-def insert_name(array, name):
-    array.insert(0, name)
-
-
-def clear_list(var):
-    array = var.split('  ')
-    array = list(filter(None, array))
-    return array
-
-
 # TODO: Keyboard(WTF is even supposed to be here?)
 def info_keyboard():
     print("Standard PS/2 Keyboard")
