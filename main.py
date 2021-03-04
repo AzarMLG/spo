@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 from spo.logic import info_cpu, info_bios, info_partitions, info_disks, info_keyboard, info_motherboard, info_mouse, \
     info_gpu, info_monitor, info_network, info_ps, info_uptime, info_who
 from spo.display import print_welcome, print_menu, pause, clear
