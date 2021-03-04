@@ -54,3 +54,7 @@ def linux_print_bios():
 
 def linux_print_disks():
     pass
+
+
+def linux_print_mb():
+    pass

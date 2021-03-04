@@ -7,10 +7,10 @@ from datetime import datetime, date
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from spo.linux.getinfo import linux_print_cpu, linux_print_bios, linux_print_disks
+from spo.linux.getinfo import linux_print_cpu, linux_print_bios, linux_print_disks, linux_print_mb
 from spo.multiplatform.getinfo import print_partitions
-from spo.win32.getinfo import win32_print_cpu, win32_print_bios, win32_print_disks
-from spo.win32.wmic import win32_gpu, win32_mb, win32_mon
+from spo.win32.getinfo import win32_print_cpu, win32_print_bios, win32_print_disks, win32_print_mb
+from spo.win32.wmic import win32_gpu, win32_mon
 from print_ import print_unavailable
 
 
@@ -32,7 +32,6 @@ def info_partitions():
     print_partitions()
 
 
-# TODO: Disks
 def info_disks():
     if sys.platform == 'win32':
         win32_print_disks()
@@ -47,19 +46,9 @@ def info_keyboard():
 
 def info_motherboard():
     if sys.platform == 'win32':
-        # Use "wmic BASEBOARD get ***"
-        # Caption ConfigOptions CreationClassName Depth Description Height HostingBoard HotSwappable InstallDate
-        # Manufacturer Model Name OtherIdentifyingInfo PartNumber PoweredOn  Product Removable  Replaceable
-        # Requirements Description RequiresDaughterBoard SerialNumber SKU SlotLayout SpecialRequirements Status Tag
-        # Version Weight  Width
-        manufacturer = win32_mb("Manufacturer")
-        product = win32_mb("Product")
-        sn = win32_mb("SerialNumber")
-        print("Имя: ",              product,
-              "\nИзготовитель: ",   manufacturer,
-              "\nСерийный номер: ", sn)
+        win32_print_mb()
     else:
-        pass
+        linux_print_mb()
 
 
 # TODO Mouse

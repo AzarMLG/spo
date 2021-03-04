@@ -2,7 +2,7 @@ from psutil._common import bytes2human
 from tabulate import tabulate
 
 from spo.lists import form_list, insert_name, clear_list
-from spo.win32.wmic import win32_cpu, win32_bios, win32_disk
+from spo.win32.wmic import win32_cpu, win32_bios, win32_disk, win32_mb
 
 
 def win32_print_cpu():
@@ -75,3 +75,17 @@ def win32_print_disks():
     insert_name(size, "Размер: ")
     print(tabulate([index, size, device_id, partitions, firmware, serial, bytes_ps, total_sectors],
                    headers=caption))
+
+
+def win32_print_mb():
+    # Use "wmic BASEBOARD get ***"
+    # Caption ConfigOptions CreationClassName Depth Description Height HostingBoard HotSwappable InstallDate
+    # Manufacturer Model Name OtherIdentifyingInfo PartNumber PoweredOn  Product Removable  Replaceable
+    # Requirements Description RequiresDaughterBoard SerialNumber SKU SlotLayout SpecialRequirements Status Tag
+    # Version Weight  Width
+    manufacturer = win32_mb("Manufacturer")
+    product = win32_mb("Product")
+    sn = win32_mb("SerialNumber")
+    print("Имя: ", product,
+          "\nИзготовитель: ", manufacturer,
+          "\nСерийный номер: ", sn)
