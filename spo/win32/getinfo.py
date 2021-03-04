@@ -101,7 +101,7 @@ def win32_print_gpu():
     print("Имя: ",                           win32_gpu("Name"),
           "\nПамять: ",      bytes2human(int(win32_gpu("AdapterRAM"))),
           "\nТекущее разрешение: ",          win32_get_resolution(),
-          "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
+          "\nТекущаяя частота обновления: ", win32_gpu("CurrentRefreshRate").replace(" ", ""), "Hz",
           "\nВерсия драйвера: ",             win32_gpu("DriverVersion"),
           "\nУстановленные видеодрайверы: ", win32_gpu("InstalledDisplayDrivers")
           )
@@ -111,5 +111,5 @@ def win32_print_monitor():
     print("Имя: ",                          win32_mon("Caption"),
           "\nID Устройства: ",              win32_mon("DeviceID"),
           "\nТекущее разрешение: ",         win32_get_resolution(),
-          "\nТекущая частота обновления: ", win32_gpu("CurrentRefreshRate"), "Hz",
+          "\nТекущая частота обновления: ", win32_gpu("CurrentRefreshRate").replace(" ", ""), "Hz",
           )
