@@ -8,10 +8,11 @@ import cpuinfo
 import subprocess
 
 from datetime import datetime, date
+from tabulate import tabulate
 from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
-from functions.win32 import win32_gpu, win32_bios, win32_cpu
+from functions.win32 import win32_gpu, win32_bios, win32_cpu, win32_disk
 from print_ import print_unavailable
 
 af_map = {
@@ -137,7 +138,49 @@ def info_partitions():
 
 # TODO: Disks
 def info_disks():
-    pass
+    if sys.platform == 'win32':
+        # Use "wmic DISKDRIVE get ***"
+        # Availability BytesPerSector Capabilities CapabilityDescriptions Caption
+        # CompressionMethod ConfigManagerErrorCode ConfigManagerUserConfig CreationClassName DefaultBlockSize
+        # Description DeviceID ErrorCleared ErrorDescription ErrorMethodology FirmwareRevision Index InstallDate
+        # InterfaceType LastErrorCode Manufacturer MaxBlockSize MaxMediaSize MediaLoaded MediaType MinBlockSize Model
+        # Name NeedsCleaning NumberOfMediaSupported Partitions PNPDeviceID PowerManagementCapabilities
+        # PowerManagementSupported SCSIBus SCSILogicalUnit SCSIPort SCSITargetId SectorsPerTrack SerialNumber
+        # Signature Size Status StatusInfo SystemCreationClassName SystemName TotalCylinders TotalHeads TotalSectors
+        # TotalTracks TracksPerCylinder
+
+        caption = form_list(win32_disk("Caption"),            "Имя: ")
+        device_id = form_list(win32_disk("DeviceID"),         "ID Устройства: ")
+        bytes_ps = form_list(win32_disk("BytesPerSector"),    "Байт в секторе: ")
+        firmware = form_list(win32_disk("FirmwareRevision"),  "Ревизия прошивки: ")
+        index = form_list(win32_disk("Index"),                "Индекс: ")
+        partitions = form_list(win32_disk("Partitions"),      "Разделы: ")
+        serial = form_list(win32_disk("SerialNumber"),        "Серийный номер: ")
+        total_sectors = form_list(win32_disk("TotalSectors"), "Всего секторов: ")
+
+        size = clear_list(win32_disk("Size"))
+        for each in range(len(size)):
+            size[each] = bytes2human(int(size[each]))
+        insert_name(size, "Размер: ")
+
+        print(tabulate([index, size, device_id, partitions, firmware, serial, bytes_ps, total_sectors],
+                       headers=caption))
+
+
+def form_list(var, name):
+    array = clear_list(var)
+    insert_name(array, name)
+    return array
+
+
+def insert_name(array, name):
+    array.insert(0, name)
+
+
+def clear_list(var):
+    array = var.split('  ')
+    array = list(filter(None, array))
+    return array
 
 
 # TODO: Keyboard(WTF is even supposed to be here?)
