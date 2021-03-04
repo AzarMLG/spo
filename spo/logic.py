@@ -9,6 +9,7 @@ from psutil._common import bytes2human
 from psutil._compat import get_terminal_size
 
 from spo.linux.getinfo import linux_print_cpu, linux_print_bios
+from spo.multiplatform.getinfo import print_partitions
 from spo.win32.getinfo import win32_print_cpu, win32_print_bios
 from spo.win32.wmic import win32_gpu, win32_disk, win32_mb, win32_mon
 from print_ import print_unavailable
@@ -29,24 +30,7 @@ def info_bios():
 
 
 def info_partitions():
-    temp_line = "%-16s %10s %10s %10s %5s%% %9s  %s"
-    print(temp_line % ("Раздел", "Всего", "Исп", "Свободно", "Исп ", "ФС", "Путь"))
-    for part in psutil.disk_partitions():
-        if sys.platform == 'win32':
-            if 'cdrom' in part.opts or part.fstype == '':
-                # skip cd-rom drives with no disk in it; they may raise
-                # ENOENT, pop-up a Windows GUI error for a non-ready
-                # partition or just hang.
-                continue
-        usage = psutil.disk_usage(part.mountpoint)
-        print(temp_line % (
-            part.device,
-            bytes2human(usage.total),
-            bytes2human(usage.used),
-            bytes2human(usage.free),
-            int(usage.percent),
-            part.fstype,
-            part.mountpoint))
+    print_partitions()
 
 
 # TODO: Disks
