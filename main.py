@@ -2,14 +2,16 @@
 
 from spo.logic import info_cpu, info_bios, info_partitions, info_disks, info_keyboard, info_motherboard, info_mouse, \
     info_gpu, info_monitor, info_network, info_ps, info_uptime, info_who
-from print_ import print_welcome, print_menu
+from spo.display import print_welcome, print_menu, pause, clear
 
 
 def menu():
-    print_menu()
     while True:
+        print_menu()
         try:
             x = int(input("Введите ваш выбор: "))
+            print("\n\n")
+            clear()
         except ValueError:
             print("Это не номер, попробуйте ещё раз...")
             continue
@@ -43,6 +45,10 @@ def menu():
             break
         else:
             print("ERROR")
+            clear()
+            continue
+        pause()
+        clear()
 
 
 print_welcome()
